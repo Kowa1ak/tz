@@ -1,0 +1,630 @@
+<h2>Bank Transaction Form</h2>
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <div class="form-grid">
+    <!-- Block 1: Client Details -->
+    <fieldset class="block" formGroupName="client">
+      <legend>Client Details</legend>
+      <div class="form-field">
+        <input matInput formControlName="firstName" placeholder="First Name" />
+        <!-- 1. pattern (цифры запрещены) -->
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.firstName')?.errors?.['pattern'] &&
+            form.get('client.firstName')?.touched
+          "
+        >
+          First name must not contain numbers
+        </div>
+        <!-- 2. minlength (если нет pattern) -->
+        <div
+          class="error"
+          *ngIf="
+            !form.get('client.firstName')?.errors?.['pattern'] &&
+            form.get('client.firstName')?.errors?.['minlength'] &&
+            form.get('client.firstName')?.touched
+          "
+        >
+          First name must be at least 2 characters
+        </div>
+        <!-- 3. required (если нет pattern и minlength) -->
+        <div
+          class="error"
+          *ngIf="
+            !form.get('client.firstName')?.errors?.['pattern'] &&
+            !form.get('client.firstName')?.errors?.['minlength'] &&
+            form.get('client.firstName')?.errors?.['required'] &&
+            form.get('client.firstName')?.touched
+          "
+        >
+          First name is required
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.firstName')?.errors?.['maxlength'] &&
+            form.get('client.firstName')?.touched
+          "
+        >
+          First name must be at most 50 characters
+        </div>
+      </div>
+      <div class="form-field">
+        <input matInput formControlName="lastName" placeholder="Last Name" />
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.lastName')?.errors?.['pattern'] &&
+            form.get('client.lastName')?.touched
+          "
+        >
+          Last name must not contain numbers
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            !form.get('client.lastName')?.errors?.['pattern'] &&
+            form.get('client.lastName')?.errors?.['minlength'] &&
+            form.get('client.lastName')?.touched
+          "
+        >
+          Last name must be at least 2 characters
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            !form.get('client.lastName')?.errors?.['pattern'] &&
+            !form.get('client.lastName')?.errors?.['minlength'] &&
+            form.get('client.lastName')?.errors?.['required'] &&
+            form.get('client.lastName')?.touched
+          "
+        >
+          Last name is required
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.lastName')?.errors?.['maxlength'] &&
+            form.get('client.lastName')?.touched
+          "
+        >
+          Last name must be at most 50 characters
+        </div>
+      </div>
+      <div class="form-field">
+        <input
+          matInput
+          formControlName="middleName"
+          placeholder="Middle Name"
+        />
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.middleName')?.errors?.['pattern'] &&
+            form.get('client.middleName')?.touched
+          "
+        >
+          Middle name must not contain numbers
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            !form.get('client.middleName')?.errors?.['pattern'] &&
+            form.get('client.middleName')?.errors?.['minlength'] &&
+            form.get('client.middleName')?.touched
+          "
+        >
+          Middle name must be at least 2 characters
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            !form.get('client.middleName')?.errors?.['pattern'] &&
+            !form.get('client.middleName')?.errors?.['minlength'] &&
+            form.get('client.middleName')?.errors?.['maxlength'] &&
+            form.get('client.middleName')?.touched
+          "
+        >
+          Middle name must be at most 50 characters
+        </div>
+      </div>
+      <div class="custom-dropdown">
+        <div class="dropdown-header" (click)="toggleGender()">
+          <span
+            class="selected"
+            [class.placeholder]="!form.get('client.gender')?.value"
+          >
+            {{ form.get("client.gender")?.value || "Select gender" }}
+          </span>
+          <button
+            mat-icon-button
+            type="button"
+            (click)="toggleGender(); $event.stopPropagation()"
+          >
+            <mat-icon>{{
+              showGender ? "expand_less" : "expand_more"
+            }}</mat-icon>
+          </button>
+        </div>
+        <div class="options" *ngIf="showGender">
+          <div
+            class="option"
+            (click)="selectGender('Male'); $event.stopPropagation()"
+          >
+            Male
+          </div>
+          <div
+            class="option"
+            (click)="selectGender('Female'); $event.stopPropagation()"
+          >
+            Female
+          </div>
+        </div>
+      </div>
+      <div class="form-field">
+        <input
+          matInput
+          type="date"
+          formControlName="birthDate"
+          placeholder="Birth Date"
+        />
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.birthDate')?.errors?.['required'] &&
+            form.get('client.birthDate')?.touched
+          "
+        >
+          Birth date is required
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.birthDate')?.errors?.['ageInvalid'] &&
+            form.get('client.birthDate')?.touched
+          "
+        >
+          You must be at least 18 years old
+        </div>
+      </div>
+      <div class="form-field">
+        <input matInput formControlName="email" placeholder="Email" />
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.email')?.errors?.['required'] &&
+            form.get('client.email')?.touched
+          "
+        >
+          Email is required
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.email')?.errors?.['email'] &&
+            form.get('client.email')?.touched
+          "
+        >
+          Invalid email format
+        </div>
+      </div>
+      <div class="form-field">
+        <input
+          matInput
+          formControlName="phone"
+          placeholder="+7 (XXX) XXX-XX-XX"
+          maxlength="18"
+          (input)="onPhoneInput($event)"
+        />
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.phone')?.invalid &&
+            form.get('client.phone')?.touched
+          "
+        >
+          Phone is required and must match +7 (XXX) XXX-XX-XX
+        </div>
+      </div>
+      <div class="form-field">
+        <input
+          matInput
+          formControlName="passport"
+          placeholder="Passport (XXXX XXXXXX)"
+          maxlength="11"
+          (input)="onPassportInput($event)"
+        />
+        <div
+          class="error"
+          *ngIf="
+            form.get('client.passport')?.invalid &&
+            form.get('client.passport')?.touched
+          "
+        >
+          Passport is required and must match format XXXX XXXXXX
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Block 2: Address -->
+    <fieldset class="block" formGroupName="address">
+      <legend>Registration Address</legend>
+
+      <!-- Country (обычный input) -->
+      <div class="form-field">
+        <input matInput formControlName="country" placeholder="Country" />
+        <div
+          class="error"
+          *ngIf="form.get('address.country')?.errors?.['required'] && form.get('address.country')?.touched"
+        >
+          Country is required
+        </div>
+      </div>
+
+      <!-- Region (обычный input) -->
+      <div class="form-field">
+        <input matInput formControlName="region" placeholder="Region" />
+        <div
+          class="error"
+          *ngIf="form.get('address.region')?.errors?.['required'] && form.get('address.region')?.touched"
+        >
+          Region is required
+        </div>
+        <div
+          class="error"
+          *ngIf="form.get('address.region')?.errors?.['minlength'] && form.get('address.region')?.touched"
+        >
+          Region must be at least 3 characters
+        </div>
+      </div>
+
+      <div class="form-field">
+        <input matInput formControlName="city" placeholder="City" />
+        <div
+          class="error"
+          *ngIf="
+            form.get('address.city')?.errors?.['required'] &&
+            form.get('address.city')?.touched
+          "
+        >
+          City is required
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            form.get('address.city')?.errors?.['minlength'] &&
+            form.get('address.city')?.touched
+          "
+        >
+          City must be at least 3 characters
+        </div>
+      </div>
+      <div class="form-field">
+        <input matInput formControlName="street" placeholder="Street" />
+        <div
+          class="error"
+          *ngIf="
+            form.get('address.street')?.errors?.['required'] &&
+            form.get('address.street')?.touched
+          "
+        >
+          Street is required
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            form.get('address.street')?.errors?.['minlength'] &&
+            form.get('address.street')?.touched
+          "
+        >
+          Street must be at least 3 characters
+        </div>
+      </div>
+      <div class="form-field">
+        <input matInput formControlName="house" placeholder="House" />
+        <div
+          class="error"
+          *ngIf="
+            form.get('address.house')?.errors?.['required'] &&
+            form.get('address.house')?.touched
+          "
+        >
+          House is required
+        </div>
+      </div>
+      <div class="form-field">
+        <input matInput formControlName="apartment" placeholder="Apartment" />
+        <div
+          class="error"
+          *ngIf="
+            form.get('address.apartment')?.invalid &&
+            form.get('address.apartment')?.touched
+          "
+        >
+          Apartment must be numeric
+        </div>
+      </div>
+      <div class="form-field">
+        <input
+          matInput
+          formControlName="postalCode"
+          placeholder="Postal Code"
+        />
+        <div
+          class="error"
+          *ngIf="
+            form.get('address.postalCode')?.errors?.['required'] &&
+            form.get('address.postalCode')?.touched
+          "
+        >
+          Postal code is required
+        </div>
+        <div
+          class="error"
+          *ngIf="
+            form.get('address.postalCode')?.errors?.['pattern'] &&
+            form.get('address.postalCode')?.touched
+          "
+        >
+          Postal code must be exactly 6 digits
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Block 3: Bank Details -->
+    <fieldset class="block" formGroupName="bankDetails">
+      <legend>Bank Details</legend>
+      <div class="form-field">
+        <input
+          matInput
+          formControlName="accountNumber"
+          placeholder="Account Number"
+        />
+        <div
+          class="error"
+          *ngIf="
+            form.get('bankDetails.accountNumber')?.invalid &&
+            form.get('bankDetails.accountNumber')?.touched
+          "
+        >
+          Account number is required
+        </div>
+      </div>
+      <div class="form-field">
+        <input matInput formControlName="bic" placeholder="BIC" />
+        <div
+          class="error"
+          *ngIf="
+            form.get('bankDetails.bic')?.invalid &&
+            form.get('bankDetails.bic')?.touched
+          "
+        >
+          BIC is required
+        </div>
+      </div>
+      <div class="form-field">
+        <input matInput formControlName="bankName" placeholder="Bank Name" />
+        <div
+          class="error"
+          *ngIf="
+            form.get('bankDetails.bankName')?.invalid &&
+            form.get('bankDetails.bankName')?.touched
+          "
+        >
+          Bank name is required
+        </div>
+      </div>
+      <div class="form-field">
+        <input
+          matInput
+          formControlName="correspondentAccount"
+          placeholder="Correspondent Account"
+        />
+        <div
+          class="error"
+          *ngIf="
+            form.get('bankDetails.correspondentAccount')?.invalid &&
+            form.get('bankDetails.correspondentAccount')?.touched
+          "
+        >
+          Correspondent account is required
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Block 4: Transaction Information -->
+    <fieldset class="block" formGroupName="transaction">
+      <legend>Transaction Information</legend>
+      <div class="custom-dropdown" style="margin-top: 8px">
+        <div class="dropdown-header" (click)="toggleType()">
+          <span
+            class="selected"
+            [class.placeholder]="!form.get('transaction.type')?.value"
+          >
+            {{
+              form.get("transaction.type")?.value || "Select transaction type"
+            }}
+          </span>
+          <button
+            mat-icon-button
+            type="button"
+            (click)="toggleType(); $event.stopPropagation()"
+          >
+            <mat-icon>{{ showType ? "expand_less" : "expand_more" }}</mat-icon>
+          </button>
+        </div>
+        <div class="options" *ngIf="showType">
+          <div
+            class="option"
+            (click)="selectType('Transfer'); $event.stopPropagation()"
+          >
+            Transfer
+          </div>
+          <div
+            class="option"
+            (click)="selectType('Payment'); $event.stopPropagation()"
+          >
+            Payment
+          </div>
+          <div
+            class="option"
+            (click)="selectType('Top-up'); $event.stopPropagation()"
+          >
+            Top-up
+          </div>
+        </div>
+      </div>
+      <div class="form-field">
+        <input
+          matInput
+          type="number"
+          formControlName="amount"
+          placeholder="Amount"
+        />
+        <div
+          class="error"
+          *ngIf="
+            form.get('transaction.amount')?.invalid &&
+            form.get('transaction.amount')?.touched
+          "
+        >
+          Amount is required
+        </div>
+      </div>
+      <div class="custom-dropdown">
+        <div class="dropdown-header" (click)="toggleCurrency()">
+          <span
+            class="selected"
+            [class.placeholder]="!form.get('transaction.currency')?.value"
+          >
+            {{ form.get("transaction.currency")?.value || "Select currency" }}
+          </span>
+          <button
+            mat-icon-button
+            type="button"
+            (click)="toggleCurrency(); $event.stopPropagation()"
+          >
+            <mat-icon>{{
+              showCurrency ? "expand_less" : "expand_more"
+            }}</mat-icon>
+          </button>
+        </div>
+        <div class="options" *ngIf="showCurrency">
+          <div
+            class="option"
+            (click)="selectCurrency('RUB ₽'); $event.stopPropagation()"
+          >
+            RUB ₽
+          </div>
+          <div
+            class="option"
+            (click)="selectCurrency('USD $'); $event.stopPropagation()"
+          >
+            USD $
+          </div>
+          <div
+            class="option"
+            (click)="selectCurrency('EUR €'); $event.stopPropagation()"
+          >
+            EUR €
+          </div>
+        </div>
+      </div>
+      <div class="form-field">
+        <textarea
+          matInput
+          formControlName="comment"
+          placeholder="Comment (optional)"
+          (input)="autoResize($event)"
+        ></textarea>
+        <div
+          class="error"
+          *ngIf="
+            form.get('transaction.comment')?.invalid &&
+            form.get('transaction.comment')?.touched
+          "
+        >
+          Comment must be at most 200 characters
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Block 5: Additional Documents -->
+    <fieldset class="block form-docs">
+      <legend>Additional Documents</legend>
+      <div formArrayName="documents">
+        <div
+          *ngFor="let doc of documents.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <mat-form-field appearance="outline">
+            <mat-label>Document Type</mat-label>
+            <mat-select formControlName="type">
+              <mat-option value="Passport">Passport</mat-option>
+              <mat-option value="SNILS">SNILS</mat-option>
+              <mat-option value="INN">INN</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="form-field">
+            <input
+              matInput
+              formControlName="number"
+              placeholder="Document Number"
+            />
+            <div
+              class="error"
+              *ngIf="
+                form.get('documents.' + i + '.number')?.invalid &&
+                form.get('documents.' + i + '.number')?.touched
+              "
+            >
+              Document number is required
+            </div>
+          </div>
+          <div class="form-field">
+            <input matInput type="date" formControlName="issueDate" />
+            <div
+              class="error"
+              *ngIf="
+                form.get('documents.' + i + '.issueDate')?.invalid &&
+                form.get('documents.' + i + '.issueDate')?.touched
+              "
+            >
+              Issue date is required
+            </div>
+          </div>
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            (click)="removeDocument(i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="addDocument()"
+      >
+        <mat-icon>add</mat-icon> Add Document
+      </button>
+    </fieldset>
+  </div>
+
+  <div class="form-actions">
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      <mat-icon>send</mat-icon> Submit
+    </button>
+    <button mat-stroked-button color="accent" type="button" (click)="reset()">
+      <mat-icon>clear</mat-icon> Reset
+    </button>
+  </div>
+</form>

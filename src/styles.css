@@ -1,1 +1,44 @@
-/* You can add global styles to this file, and also import other style files */
+/* 1) Растягиваем контейнер mat-form-field */
+mat-form-field.full-width {
+    width: 100%;
+  }
+  
+  /* 2) Минимальная высота flex-контейнера (mdc) */
+  ::ng-deep mat-form-field.full-width
+    .mat-mdc-form-field-flex {
+    min-height: 50px !important;
+    height: 50px !important;
+    padding: 0 12px !important;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* 3) Выравниваем сам <input> по высоте родителя */
+  ::ng-deep mat-form-field.full-width
+    input.mat-mdc-input-element {
+    height: 100% !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: normal !important;
+  }
+  
+  /* 4) И для <mat-select> — сам триггер */
+  ::ng-deep mat-form-field.full-width
+    .mat-mdc-select-trigger {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* 5) А ещё у outline-формы иногда нужно задавать min-height самому MDC-контейнеру */
+  ::ng-deep mat-form-field.full-width
+    .mdc-text-field--outlined,
+  ::ng-deep mat-form-field.full-width
+    .mdc-select--outlined {
+    min-height: 50px !important;
+    height: 50px !important;
+  }
+  
