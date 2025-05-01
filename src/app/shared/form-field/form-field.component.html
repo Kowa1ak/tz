@@ -1,0 +1,21 @@
+<mat-form-field
+  appearance="outline"
+  class="form-field full-width"
+  [formGroup]="group"
+>
+  <mat-label>{{ label }}</mat-label>
+  <ng-container [ngSwitch]="type">
+    <input *ngSwitchCase="'input'" matInput [formControlName]="name" />
+    <textarea
+      *ngSwitchCase="'textarea'"
+      matInput
+      [formControlName]="name"
+    ></textarea>
+    <mat-select *ngSwitchCase="'select'" [formControlName]="name">
+      <mat-option *ngFor="let o of options" [value]="o">{{ o }}</mat-option>
+    </mat-select>
+  </ng-container>
+  <mat-error *ngIf="group.get(name)?.invalid && group.get(name)?.touched">
+    {{ label }} is invalid
+  </mat-error>
+</mat-form-field>

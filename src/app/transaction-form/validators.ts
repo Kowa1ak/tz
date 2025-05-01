@@ -22,4 +22,11 @@ export class CustomValidators {
         ? null
         : { passportInvalid: true };
   }
+
+  static numericValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const val = control.value as string;
+      return /^\d+$/.test(val) ? null : { notNumeric: true };
+    };
+  }
 }

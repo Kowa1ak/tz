@@ -5,6 +5,7 @@ import {
   FormBuilder,
   Validators,
   FormArray,
+  FormControl,
 } from '@angular/forms';
 import { CustomValidators } from './validators';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,17 +47,15 @@ export class TransactionFormComponent {
     'Mexico',
     'South Korea',
     'Indonesia',
-    'Turkey',
-    'Saudi Arabia',
-    'Argentina',
-    'South Africa',
-    'Egypt',
     'Russia',
     'Ukraine',
     'Belarus',
     'Kazakhstan',
     'Uzbekistan',
   ];
+
+  transactionTypes = ['Перевод', 'Оплата', 'Пополнение'];
+  currenciesList = ['RUB', 'USD', 'EUR'];
 
   form = this.fb.group({
     client: this.fb.group({
@@ -108,7 +107,14 @@ export class TransactionFormComponent {
       street: ['', [Validators.required, Validators.minLength(3)]],
       house: ['', Validators.required],
       apartment: ['', Validators.pattern(/^\d*$/)],
-      postalCode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+      postalCode: [
+        '',
+        [
+          Validators.required,
+          CustomValidators.numericValidator(),
+          Validators.pattern(/^\d{6}$/),
+        ],
+      ],
     }),
     bankDetails: this.fb.group({
       accountNumber: [
@@ -142,12 +148,19 @@ export class TransactionFormComponent {
       type: ['', Validators.required],
       number: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
       issueDate: ['', Validators.required],
+      file: new FormControl<File | null>(null),
     });
     this.documents.push(doc);
   }
 
   removeDocument(index: number): void {
     this.documents.removeAt(index);
+  }
+
+  onFileChange(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files.length ? input.files[0] : null;
+    this.documents.at(index).get('file')!.setValue(file);
   }
 
   submit(): void {
@@ -163,6 +176,8 @@ export class TransactionFormComponent {
 
   reset(): void {
     this.form.reset();
+    this.form.markAsUntouched();
+    this.form.markAsPristine();
     this.documents.clear();
   }
 
@@ -256,4 +271,35 @@ export class TransactionFormComponent {
     input.value = formatted;
     this.form.get('client.phone')!.setValue(formatted, { emitEvent: false });
   }
+
+  allowOnlyNumbers(event: KeyboardEvent): void {
+    const char = event.key;
+    if (!/^\d$/.test(char)) {
+      event.preventDefault();
+    }
+  }
+
+  noMinus(event: KeyboardEvent): void {
+    if (event.key === '-') {
+      event.preventDefault();
+    }
+  }
+
+  clientFields = [
+    { name: 'firstName', label: 'First Name', type: 'input' },
+    { name: 'lastName', label: 'Last Name', type: 'input' },
+    { name: 'middleName', label: 'Middle Name', type: 'input' },
+    {
+      name: 'gender',
+      label: 'Gender',
+      type: 'select',
+      options: ['Male', 'Female'],
+    },
+    { name: 'birthDate', label: 'Birth Date', type: 'input' },
+    { name: 'email', label: 'Email', type: 'input' },
+    { name: 'phone', label: 'Phone', type: 'input' },
+    { name: 'passport', label: 'Passport', type: 'input' },
+  ];
+
+  // аналогично addressFields, bankFields и т.д.
 }
