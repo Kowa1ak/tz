@@ -233,7 +233,6 @@
         </mat-error>
       </mat-form-field>
 
-      <!-- Region (обычный input) -->
       <mat-form-field
         appearance="outline"
         floatLabel="auto"
@@ -378,7 +377,6 @@
     <!-- Block 3: Bank Details -->
     <fieldset class="block" formGroupName="bankDetails">
       <legend>Bank Details</legend>
-      <!-- Account Number -->
       <mat-form-field
         appearance="outline"
         floatLabel="auto"
@@ -413,7 +411,6 @@
         </mat-error>
       </mat-form-field>
 
-      <!-- BIC -->
       <mat-form-field
         appearance="outline"
         floatLabel="auto"
@@ -446,7 +443,6 @@
         </mat-error>
       </mat-form-field>
 
-      <!-- Bank Name -->
       <mat-form-field
         appearance="outline"
         floatLabel="auto"
@@ -472,7 +468,6 @@
         </mat-error>
       </mat-form-field>
 
-      <!-- Correspondent Account -->
       <mat-form-field
         appearance="outline"
         floatLabel="auto"
@@ -598,11 +593,9 @@
           (input)="autoResize($event)"
           maxlength="200"
         ></textarea>
-        <!-- показываем счётчик символов -->
         <mat-hint align="end" style="color: gray">
           {{ form.get("transaction.comment")?.value?.length || 0 }} / 200
         </mat-hint>
-        <!-- сообщение при попытке превысить лимит -->
         <mat-hint
           *ngIf="(form.get('transaction.comment')?.value?.length || 0) >= 200"
           style="color: red"

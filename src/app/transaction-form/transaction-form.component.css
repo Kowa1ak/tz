@@ -1,5 +1,5 @@
 :host {
-  display: block;   /* больше не фиксируем высоту */
+  display: block;  
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -26,10 +26,10 @@ form {
 .block {
   padding: 10px 15px;
   border: 1px solid #ccc;
-  overflow: visible;  /* убираем скролл внутри блока */
+  overflow: visible; 
 }
 .form-docs {
-  grid-column: 1 / -1; /* документы растягиваем на всю ширину */
+  grid-column: 1 / -1;
 }
 .form-actions {
   display: flex;
@@ -58,7 +58,7 @@ legend {
 padding: 10px 10px;
   font-weight: bold;
 }
-/* Custom dropdown styles */
+
 .custom-dropdown {
   margin-bottom: 25px;
   position: relative;
@@ -120,12 +120,12 @@ padding: 10px 10px;
 .custom-dropdown .option:hover {
   background: #f0f0f0;
 }
-/* placeholder цвет для кастомных dropdown */
+
 .custom-dropdown .dropdown-header .selected.placeholder {
   color: #888;
 }
 
-/* серый цвет для текстового значения даты, при вводе становится чёрным */
+
 input[type="date"] {
   color: #888;
 }
@@ -133,16 +133,11 @@ input[type="date"]:valid {
   color: #000;
 }
 
-/* validation styles */
 .form-field {
   position: relative;
-  margin-bottom: 0.5rem; /* уменьшенный отступ между полями */
+  margin-bottom: 0.5rem;
 }
-/* .form-field input.ng-invalid.ng-touched.ng-dirty,
-.form-field select.ng-invalid.ng-touched.ng-dirty,
-.form-field textarea.ng-invalid.ng-touched.ng-dirty {
-  border: 1px solid red;
-} */
+
 .form-field .error {
   position: absolute;
   bottom: -1.2rem;
@@ -152,7 +147,6 @@ input[type="date"]:valid {
   white-space: nowrap;
 }
 
-/* телефон: код + номер в один ряд */
 .form-field.phone-row {
   display: flex;
   align-items: flex-start;
@@ -181,17 +175,17 @@ input[type="date"]:valid {
   margin: 0;
 }
 
-/* общая высота для mat-form-field */
+
 .mat-form-field {
   width: 100%;
-  margin-bottom: 0.5rem; /* уменьшенный отступ между полями */
+  margin-bottom: 0.5rem; 
 }
 .mat-form-field .mat-form-field-infix {
   height: 20px;
   display: flex;
   align-items: center;
 }
-/* textarea внутри mat-form-field (если нужен авто‑ресайз) */
+
 .mat-form-field textarea.mat-input-element {
   height: 20px;
   overflow: hidden;
@@ -209,7 +203,7 @@ input[type="date"]:valid {
   font-size: 14px;
 }
 
-/* file-upload */
+
 .file-upload {
   display: flex;
   align-items: center;
@@ -233,9 +227,9 @@ input[type="date"]:valid {
   font-size: 14px;
 }
 .uploaded-file {
-  display: flex;           /* вместо inline-flex */
+  display: flex;           
   align-items: center;
-  gap: 4px;                /* небольшой отступ между именем и кнопкой */
+  gap: 4px;                
 }
 .uploaded-file .file-name {
   margin-right: 4px;
@@ -249,7 +243,7 @@ input[type="date"]:valid {
   height: 24px;
   padding: 0;
   margin: 0;
-  font-size: 15px;         /* подгонка размера иконки */
+  font-size: 15px;         
   line-height: 1;
 }
 .block-delete-btn {
@@ -266,13 +260,13 @@ input[type="date"]:valid {
 .doc-actions {
   display: flex;
   gap: 8px;
-  align-items: flex-start; /* прижать к верху */
+  align-items: flex-start; 
   margin-bottom: 8px;
 }
 .file-name-inline {
   margin-left: 8px;
   font-size: 14px;
-  align-self: center; /* по центру кнопки */
+  align-self: center; 
 }
 
 .remove-file-inline-btn {
@@ -295,7 +289,6 @@ input[type="date"]:valid {
   font-size: 16px;
 }
 
-/* подгоняем высоту Choose File и Delete Document */
 .upload-btn,
 .block-delete-btn {
   height: 36px;
