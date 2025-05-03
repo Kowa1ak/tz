@@ -13,38 +13,30 @@
         <input matInput formControlName="firstName" />
         <mat-error
           *ngIf="
-          form.get('client.firstName')?.errors?.['pattern'] &&
-          form.get('client.firstName')?.touched
-        "
-        >
-          First name must not contain numbers
-        </mat-error>
-        <mat-error
-          *ngIf="
-          !form.get('client.firstName')?.errors?.['pattern'] &&
-          form.get('client.firstName')?.errors?.['minlength'] &&
-          form.get('client.firstName')?.touched
-        "
-        >
-          First name must be at least 2 characters
-        </mat-error>
-        <mat-error
-          *ngIf="
-          !form.get('client.firstName')?.errors?.['pattern'] &&
-          !form.get('client.firstName')?.errors?.['minlength'] &&
-          form.get('client.firstName')?.errors?.['required'] &&
-          form.get('client.firstName')?.touched
-        "
+            form.get('client.firstName')?.hasError('required') &&
+            form.get('client.firstName')?.touched
+          "
         >
           First name is required
         </mat-error>
         <mat-error
           *ngIf="
-          form.get('client.firstName')?.errors?.['maxlength'] &&
-          form.get('client.firstName')?.touched
-        "
+            !form.get('client.firstName')?.hasError('required') &&
+            form.get('client.firstName')?.hasError('minlength') &&
+            form.get('client.firstName')?.touched
+          "
         >
-          First name must be at most 50 characters
+          First name must be at least 2 characters
+        </mat-error>
+        <mat-error
+          *ngIf="
+            !form.get('client.firstName')?.hasError('required') &&
+            !form.get('client.firstName')?.hasError('minlength') &&
+            form.get('client.firstName')?.hasError('lettersInvalid') &&
+            form.get('client.firstName')?.touched
+          "
+        >
+          First name must not contain numbers
         </mat-error>
       </mat-form-field>
       <mat-form-field
@@ -56,38 +48,30 @@
         <input matInput formControlName="lastName" />
         <mat-error
           *ngIf="
-          form.get('client.lastName')?.errors?.['pattern'] &&
-          form.get('client.lastName')?.touched
-        "
-        >
-          Last name must not contain numbers
-        </mat-error>
-        <mat-error
-          *ngIf="
-          !form.get('client.lastName')?.errors?.['pattern'] &&
-          form.get('client.lastName')?.errors?.['minlength'] &&
-          form.get('client.lastName')?.touched
-        "
-        >
-          Last name must be at least 2 characters
-        </mat-error>
-        <mat-error
-          *ngIf="
-          !form.get('client.lastName')?.errors?.['pattern'] &&
-          !form.get('client.lastName')?.errors?.['minlength'] &&
-          form.get('client.lastName')?.errors?.['required'] &&
-          form.get('client.lastName')?.touched
-        "
+            form.get('client.lastName')?.hasError('required') &&
+            form.get('client.lastName')?.touched
+          "
         >
           Last name is required
         </mat-error>
         <mat-error
           *ngIf="
-          form.get('client.lastName')?.errors?.['maxlength'] &&
-          form.get('client.lastName')?.touched
-        "
+            !form.get('client.lastName')?.hasError('required') &&
+            form.get('client.lastName')?.hasError('minlength') &&
+            form.get('client.lastName')?.touched
+          "
         >
-          Last name must be at most 50 characters
+          Last name must be at least 2 characters
+        </mat-error>
+        <mat-error
+          *ngIf="
+            !form.get('client.lastName')?.hasError('required') &&
+            !form.get('client.lastName')?.hasError('minlength') &&
+            form.get('client.lastName')?.hasError('lettersInvalid') &&
+            form.get('client.lastName')?.touched
+          "
+        >
+          Last name must not contain numbers
         </mat-error>
       </mat-form-field>
       <mat-form-field
@@ -99,30 +83,20 @@
         <input matInput formControlName="middleName" />
         <mat-error
           *ngIf="
-          form.get('client.middleName')?.errors?.['pattern'] &&
-          form.get('client.middleName')?.touched
-        "
-        >
-          Middle name must not contain numbers
-        </mat-error>
-        <mat-error
-          *ngIf="
-          !form.get('client.middleName')?.errors?.['pattern'] &&
-          form.get('client.middleName')?.errors?.['minlength'] &&
-          form.get('client.middleName')?.touched
-        "
+            form.get('client.middleName')?.hasError('minlength') &&
+            form.get('client.middleName')?.touched
+          "
         >
           Middle name must be at least 2 characters
         </mat-error>
         <mat-error
           *ngIf="
-          !form.get('client.middleName')?.errors?.['pattern'] &&
-          !form.get('client.middleName')?.errors?.['minlength'] &&
-          form.get('client.middleName')?.errors?.['maxlength'] &&
-          form.get('client.middleName')?.touched
-        "
+            !form.get('client.middleName')?.hasError('minlength') &&
+            form.get('client.middleName')?.hasError('lettersInvalid') &&
+            form.get('client.middleName')?.touched
+          "
         >
-          Middle name must be at most 50 characters
+          Middle name must not contain numbers
         </mat-error>
       </mat-form-field>
       <mat-form-field
@@ -376,14 +350,6 @@
         />
         <mat-error
           *ngIf="
-            form.get('address.postalCode')?.errors?.['notNumeric'] &&
-            form.get('address.postalCode')?.touched
-          "
-        >
-          Postal code must contain only digits
-        </mat-error>
-        <mat-error
-          *ngIf="
             form.get('address.postalCode')?.errors?.['required'] &&
             form.get('address.postalCode')?.touched
           "
@@ -392,8 +358,15 @@
         </mat-error>
         <mat-error
           *ngIf="
-            form.get('address.postalCode')?.errors?.['pattern'] &&
-            !form.get('address.postalCode')?.errors?.['notNumeric'] &&
+            form.get('address.postalCode')?.errors?.['notNumeric'] &&
+            form.get('address.postalCode')?.touched
+          "
+        >
+          Postal code must contain only digits
+        </mat-error>
+        <mat-error
+          *ngIf="
+            form.get('address.postalCode')?.errors?.['digitsLengthInvalid'] &&
             form.get('address.postalCode')?.touched
           "
         >
@@ -434,6 +407,18 @@
         >
           Account number must be exactly 20 digits
         </mat-error>
+        <mat-error
+          *ngIf="
+            form
+              .get('bankDetails.accountNumber')
+              ?.hasError('digitsLengthInvalid') &&
+            form.get('bankDetails.accountNumber')?.touched
+          "
+        >
+          Must be exactly
+          {{ form.get('bankDetails.accountNumber')?.errors?.['digitsLengthInvalid']?.requiredLength }}
+          digits
+        </mat-error>
       </mat-form-field>
 
       <!-- BIC -->
@@ -464,6 +449,16 @@
           "
         >
           BIC must be exactly 9 digits
+        </mat-error>
+        <mat-error
+          *ngIf="
+            form.get('bankDetails.bic')?.hasError('digitsLengthInvalid') &&
+            form.get('bankDetails.bic')?.touched
+          "
+        >
+          Must be exactly
+          {{ form.get('bankDetails.bic')?.errors?.['digitsLengthInvalid']?.requiredLength }}
+          digits
         </mat-error>
       </mat-form-field>
 
@@ -521,6 +516,18 @@
           "
         >
           Correspondent account must be exactly 20 digits
+        </mat-error>
+        <mat-error
+          *ngIf="
+            form
+              .get('bankDetails.correspondentAccount')
+              ?.hasError('digitsLengthInvalid') &&
+            form.get('bankDetails.correspondentAccount')?.touched
+          "
+        >
+          Must be exactly
+          {{ form.get('bankDetails.correspondentAccount')?.errors?.['digitsLengthInvalid']?.requiredLength }}
+          digits
         </mat-error>
       </mat-form-field>
     </fieldset>

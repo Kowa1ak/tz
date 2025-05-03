@@ -29,4 +29,17 @@ export class CustomValidators {
       return /^\d+$/.test(val) ? null : { notNumeric: true };
     };
   }
+
+  static lettersValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null =>
+      /^[^\d]+$/.test(control.value) ? null : { lettersInvalid: true };
+  }
+
+  static digitsLength(length: number): ValidatorFn {
+    const re = new RegExp(`^\\d{${length}}$`);
+    return (control: AbstractControl): ValidationErrors | null =>
+      re.test(control.value)
+        ? null
+        : { digitsLengthInvalid: { requiredLength: length } };
+  }
 }

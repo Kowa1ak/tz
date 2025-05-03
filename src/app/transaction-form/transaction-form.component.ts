@@ -41,7 +41,6 @@ import { MatInputModule } from '@angular/material/input';
 export class TransactionFormComponent {
   @ViewChild(FormGroupDirective) formDirective!: FormGroupDirective;
 
-  // список стран (20 популярных + СНГ)
   countries = [
     'United States',
     'United Kingdom',
@@ -76,7 +75,7 @@ export class TransactionFormComponent {
           Validators.required,
           Validators.minLength(2),
           Validators.maxLength(50),
-          Validators.pattern(/^[^\d]+$/),
+          CustomValidators.lettersValidator(),
         ],
       ],
       lastName: [
@@ -85,7 +84,7 @@ export class TransactionFormComponent {
           Validators.required,
           Validators.minLength(2),
           Validators.maxLength(50),
-          Validators.pattern(/^[^\d]+$/),
+          CustomValidators.lettersValidator(),
         ],
       ],
       middleName: [
@@ -93,19 +92,13 @@ export class TransactionFormComponent {
         [
           Validators.minLength(2),
           Validators.maxLength(50),
-          Validators.pattern(/^[^\d]+$/),
+          CustomValidators.lettersValidator(),
         ],
       ],
       gender: ['', Validators.required],
       birthDate: ['', [Validators.required, CustomValidators.ageValidator(18)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: [
-        '+7 ',
-        [
-          Validators.required,
-          Validators.pattern(/^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/),
-        ],
-      ],
+      phone: ['+7 ', [Validators.required, CustomValidators.phoneValidator()]],
       passport: [
         '',
         [Validators.required, CustomValidators.passportValidator()],
@@ -123,20 +116,20 @@ export class TransactionFormComponent {
         [
           Validators.required,
           CustomValidators.numericValidator(),
-          Validators.pattern(/^\d{6}$/),
+          CustomValidators.digitsLength(6),
         ],
       ],
     }),
     bankDetails: this.fb.group({
       accountNumber: [
         '',
-        [Validators.required, Validators.pattern(/^\d{20}$/)],
+        [Validators.required, CustomValidators.digitsLength(20)],
       ],
-      bic: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
+      bic: ['', [Validators.required, CustomValidators.digitsLength(9)]],
       bankName: ['', [Validators.required, Validators.minLength(3)]],
       correspondentAccount: [
         '',
-        [Validators.required, Validators.pattern(/^\d{20}$/)],
+        [Validators.required, CustomValidators.digitsLength(20)],
       ],
     }),
     transaction: this.fb.group({
@@ -157,7 +150,7 @@ export class TransactionFormComponent {
   addDocument(): void {
     const doc = this.fb.group({
       type: ['', Validators.required],
-      number: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
+      number: ['', [Validators.required, CustomValidators.numericValidator()]],
       issueDate: ['', Validators.required],
       file: new FormControl<File | null>(null),
     });
@@ -232,23 +225,20 @@ export class TransactionFormComponent {
         }),
       };
       console.log(out);
-      this.reset(); // сразу очистить все поля после отправки
+      this.reset();
     } else {
       this.form.markAllAsTouched();
     }
   }
 
   reset(): void {
-    // сброс всех контролов, их состояний и состояния формы (submitted)
     this.formDirective.resetForm();
     this.documents.clear();
-    // всегда оставляем в поле телефона префикс "+7 "
     this.form.get('client.phone')!.setValue('+7 ');
     this.form.get('client.phone')!.markAsPristine();
     this.form.get('client.phone')!.markAsUntouched();
   }
 
-  // для кастомных dropdown
   showGender = false;
   showType = false;
   showCurrency = false;
@@ -299,7 +289,6 @@ export class TransactionFormComponent {
     ta.style.height = ta.scrollHeight + 'px';
   }
 
-  // форматирование ввода паспорта: XXXX XXXXXX (цифры или A–Z)
   onPassportInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     let chars = input.value
@@ -312,16 +301,13 @@ export class TransactionFormComponent {
     this.form.get('client.passport')!.setValue(formatted, { emitEvent: false });
   }
 
-  // форматируем ввод телефона: +7 (XXX) XXX-XX-XX, без лишних семёрок
   onPhoneInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     let raw = input.value.replace(/\D/g, '');
-    // если пользователь случайно вводит ведущую 7 – убираем её
     if (raw.startsWith('7')) {
       raw = raw.slice(1);
     }
     const digits = raw.slice(0, 10);
-    // всегда начинаем с "+7 "
     let formatted = '+7 ';
     if (digits.length > 0) {
       formatted += '(' + digits.substring(0, 3);
