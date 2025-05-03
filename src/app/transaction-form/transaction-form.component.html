@@ -400,15 +400,7 @@
         </mat-error>
         <mat-error
           *ngIf="
-            form.get('bankDetails.accountNumber')?.errors?.['pattern'] &&
-            !form.get('bankDetails.accountNumber')?.errors?.['required'] &&
-            form.get('bankDetails.accountNumber')?.touched
-          "
-        >
-          Account number must be exactly 20 digits
-        </mat-error>
-        <mat-error
-          *ngIf="
+            !form.get('bankDetails.accountNumber')?.hasError('required') &&
             form
               .get('bankDetails.accountNumber')
               ?.hasError('digitsLengthInvalid') &&
@@ -443,15 +435,7 @@
         </mat-error>
         <mat-error
           *ngIf="
-            form.get('bankDetails.bic')?.errors?.['pattern'] &&
-            !form.get('bankDetails.bic')?.errors?.['required'] &&
-            form.get('bankDetails.bic')?.touched
-          "
-        >
-          BIC must be exactly 9 digits
-        </mat-error>
-        <mat-error
-          *ngIf="
+            !form.get('bankDetails.bic')?.hasError('required') &&
             form.get('bankDetails.bic')?.hasError('digitsLengthInvalid') &&
             form.get('bankDetails.bic')?.touched
           "
@@ -510,15 +494,9 @@
         </mat-error>
         <mat-error
           *ngIf="
-            form.get('bankDetails.correspondentAccount')?.errors?.['pattern'] &&
-            !form.get('bankDetails.correspondentAccount')?.errors?.['required'] &&
-            form.get('bankDetails.correspondentAccount')?.touched
-          "
-        >
-          Correspondent account must be exactly 20 digits
-        </mat-error>
-        <mat-error
-          *ngIf="
+            !form
+              .get('bankDetails.correspondentAccount')
+              ?.hasError('required') &&
             form
               .get('bankDetails.correspondentAccount')
               ?.hasError('digitsLengthInvalid') &&
@@ -615,6 +593,7 @@
         <mat-label>Comment (optional)</mat-label>
         <textarea
           matInput
+          #commentArea
           formControlName="comment"
           (input)="autoResize($event)"
           maxlength="200"
@@ -660,6 +639,14 @@
               <mat-option value="SNILS">SNILS</mat-option>
               <mat-option value="INN">INN</mat-option>
             </mat-select>
+            <mat-error
+              *ngIf="
+                documents.at(i).get('type')?.hasError('required') &&
+                documents.at(i).get('type')?.touched
+              "
+            >
+              Document type is required
+            </mat-error>
           </mat-form-field>
           <mat-form-field
             appearance="outline"

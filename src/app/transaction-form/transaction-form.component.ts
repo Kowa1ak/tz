@@ -3,6 +3,10 @@ import {
   HostListener,
   ViewChild,
   ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -39,35 +43,13 @@ import { MatInputModule } from '@angular/material/input';
   styleUrls: ['./transaction-form.component.css'],
 })
 export class TransactionFormComponent {
+  @Input() formGroup?: FormGroup;
+  @Output() formSubmit = new EventEmitter<any>();
   @ViewChild(FormGroupDirective) formDirective!: FormGroupDirective;
+  @ViewChild('commentArea') commentArea!: ElementRef<HTMLTextAreaElement>;
 
-  countries = [
-    'United States',
-    'United Kingdom',
-    'Canada',
-    'Australia',
-    'Germany',
-    'France',
-    'Italy',
-    'Spain',
-    'Japan',
-    'China',
-    'India',
-    'Brazil',
-    'Mexico',
-    'South Korea',
-    'Indonesia',
-    'Russia',
-    'Ukraine',
-    'Belarus',
-    'Kazakhstan',
-    'Uzbekistan',
-  ];
-
-  transactionTypes = ['Transfer', 'Payment', 'Deposit'];
-  currenciesList = ['RUB', 'USD', 'EUR'];
-
-  form = this.fb.group({
+  // внутренняя форма
+  private internalForm = this.fb.group({
     client: this.fb.group({
       firstName: [
         '',
@@ -110,7 +92,7 @@ export class TransactionFormComponent {
       city: ['', [Validators.required, Validators.minLength(3)]],
       street: ['', [Validators.required, Validators.minLength(3)]],
       house: ['', Validators.required],
-      apartment: ['', Validators.pattern(/^\d*$/)],
+      apartment: ['', CustomValidators.numericValidator()],
       postalCode: [
         '',
         [
@@ -140,6 +122,37 @@ export class TransactionFormComponent {
     }),
     documents: this.fb.array([]),
   });
+
+  // выбираем реальную форму: внешнюю или внутреннюю
+  get form(): FormGroup {
+    return this.formGroup ?? this.internalForm;
+  }
+
+  countries = [
+    'United States',
+    'United Kingdom',
+    'Canada',
+    'Australia',
+    'Germany',
+    'France',
+    'Italy',
+    'Spain',
+    'Japan',
+    'China',
+    'India',
+    'Brazil',
+    'Mexico',
+    'South Korea',
+    'Indonesia',
+    'Russia',
+    'Ukraine',
+    'Belarus',
+    'Kazakhstan',
+    'Uzbekistan',
+  ];
+
+  transactionTypes = ['Transfer', 'Payment', 'Deposit'];
+  currenciesList = ['RUB', 'USD', 'EUR'];
 
   constructor(private fb: FormBuilder) {}
 
@@ -225,6 +238,7 @@ export class TransactionFormComponent {
         }),
       };
       console.log(out);
+      this.formSubmit.emit(out);
       this.reset();
     } else {
       this.form.markAllAsTouched();
@@ -237,6 +251,9 @@ export class TransactionFormComponent {
     this.form.get('client.phone')!.setValue('+7 ');
     this.form.get('client.phone')!.markAsPristine();
     this.form.get('client.phone')!.markAsUntouched();
+    if (this.commentArea) {
+      this.commentArea.nativeElement.style.height = '40px';
+    }
   }
 
   showGender = false;
