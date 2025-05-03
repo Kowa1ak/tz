@@ -1,4 +1,9 @@
-import { Component, HostListener } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -6,6 +11,9 @@ import {
   Validators,
   FormArray,
   FormControl,
+  AbstractControl,
+  FormGroup,
+  FormGroupDirective,
 } from '@angular/forms';
 import { CustomValidators } from './validators';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
   selector: 'app-transaction-form',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -30,6 +39,8 @@ import { MatInputModule } from '@angular/material/input';
   styleUrls: ['./transaction-form.component.css'],
 })
 export class TransactionFormComponent {
+  @ViewChild(FormGroupDirective) formDirective!: FormGroupDirective;
+
   // список стран (20 популярных + СНГ)
   countries = [
     'United States',
@@ -54,7 +65,7 @@ export class TransactionFormComponent {
     'Uzbekistan',
   ];
 
-  transactionTypes = ['Перевод', 'Оплата', 'Пополнение'];
+  transactionTypes = ['Transfer', 'Payment', 'Deposit'];
   currenciesList = ['RUB', 'USD', 'EUR'];
 
   form = this.fb.group({
@@ -165,20 +176,76 @@ export class TransactionFormComponent {
 
   submit(): void {
     if (this.form.valid) {
-      const value = this.form.value;
-      const client = value.client!;
-      const fullPhone = client.phone!;
-      console.log({ ...value, client: { ...client, phone: fullPhone } });
+      const v = this.form.value!;
+      const client = v.client!;
+      const addr = v.address!;
+      const bank = v.bankDetails!;
+      const tr = v.transaction!;
+      const out = {
+        clientInfo: {
+          firstName: client.firstName!,
+          lastName: client.lastName!,
+          middleName: client.middleName || undefined,
+          gender: client.gender!.toLowerCase() as 'male' | 'female',
+          birthDate: new Date(client.birthDate!),
+          email: client.email!,
+          phone: client.phone!,
+          passport: client.passport!,
+        },
+        address: {
+          country: addr.country!,
+          region: addr.region!,
+          city: addr.city!,
+          street: addr.street!,
+          house: addr.house!,
+          apartment: addr.apartment || undefined,
+          postalCode: addr.postalCode!,
+        },
+        bankDetails: {
+          accountNumber: bank.accountNumber!,
+          bic: bank.bic!,
+          bankName: bank.bankName!,
+          correspondentAccount: bank.correspondentAccount!,
+        },
+        transactionInfo: {
+          transactionType: (tr.type! === 'Deposit'
+            ? 'replenishment'
+            : tr.type!.toLowerCase()) as
+            | 'transfer'
+            | 'payment'
+            | 'replenishment',
+          amount: tr.amount!,
+          currency: tr.currency! as 'RUB' | 'USD' | 'EUR',
+          comment: tr.comment || undefined,
+        },
+        documents: this.documents.controls.map((ctrl) => {
+          const d = ctrl.value;
+          return {
+            documentType: (d.type as string).toLowerCase() as
+              | 'passport'
+              | 'snils'
+              | 'inn',
+            documentNumber: d.number,
+            issueDate: new Date(d.issueDate),
+            file: d.file as File | null,
+          };
+        }),
+      };
+      console.log(out);
+      this.reset(); // сразу очистить все поля после отправки
     } else {
       this.form.markAllAsTouched();
     }
   }
 
   reset(): void {
-    this.form.reset();
-    this.form.markAsUntouched();
-    this.form.markAsPristine();
+    // сброс всех контролов, их состояний и состояния формы (submitted)
+    this.formDirective.resetForm();
     this.documents.clear();
+    // всегда оставляем в поле телефона префикс "+7 "
+    this.form.get('client.phone')!.setValue('+7 ');
+    this.form.get('client.phone')!.markAsPristine();
+    this.form.get('client.phone')!.markAsUntouched();
   }
 
   // для кастомных dropdown
@@ -284,22 +351,4 @@ export class TransactionFormComponent {
       event.preventDefault();
     }
   }
-
-  clientFields = [
-    { name: 'firstName', label: 'First Name', type: 'input' },
-    { name: 'lastName', label: 'Last Name', type: 'input' },
-    { name: 'middleName', label: 'Middle Name', type: 'input' },
-    {
-      name: 'gender',
-      label: 'Gender',
-      type: 'select',
-      options: ['Male', 'Female'],
-    },
-    { name: 'birthDate', label: 'Birth Date', type: 'input' },
-    { name: 'email', label: 'Email', type: 'input' },
-    { name: 'phone', label: 'Phone', type: 'input' },
-    { name: 'passport', label: 'Passport', type: 'input' },
-  ];
-
-  // аналогично addressFields, bankFields и т.д.
 }
